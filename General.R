@@ -109,27 +109,21 @@ ggplot() + geom_raster(data = biom_cau_df,
                             family = "TT Times New Roman"))
   
   # 1.c Landcover ----
-lc <- raster("./Biomasa_FONDECYT_1171560/tif/LandCover_rf_2019.tif")
-projection(lc) <- projection(cau)
-
-st_bbox(biom);st_bbox(cau)
-
-# Extent
-lc <- lc %>% setExtent(ext = extent(cau))
-
-extent(lc);extent(cau)
-
-# crop() y mask()
-lc_cau <- lc %>% crop(cau) %>% mask(cau)
+lc_cau <- raster("~/Casanova/Universidad/Master/Tesis/Datos/Biomasa_FONDECYT_1171560/tif/LandCover_rf_2019.tif") %>% 
+  projectRaster(crs = 32718) %>% 
+  crop(cau) %>% 
+  mask(cau)
 
 # Conversión a df
+lc_cau_df <- lc_cau %>% 
+  as("SpatialPixelsDataFrame") %>% 
+  as.data.frame() %>% 
+  rename(LandCover = LandCover_rf_2019)
 
-lc_cau_df <- lc_cau %>% as("SpatialPixelsDataFrame") %>% 
-  as.data.frame() %>% rename(LandCover = LandCover_rf_2019)
-
-lc_cau_df$LandCover %>% table()
-lc_cau_df %>% head(10)
-lc_cau_df$LandCover
+# Tabla de frecuencia
+lc_cau_df %>% 
+  pull(LandCover) %>% 
+  table()
 
 # Graficar
 ggplot() + geom_tile(data = lc_cau_df,

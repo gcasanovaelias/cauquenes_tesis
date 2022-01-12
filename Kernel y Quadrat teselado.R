@@ -4,48 +4,48 @@ library(maptools)
 library(raster)
 library(spatstat)
 library(tidyverse)
+
 #PPA----
 #Área de estudio
-setwd("~/Casanova/Universidad/Master/Tesis/Datos_Giancarlo/Trabajados/vector")
-list.files(pattern='.shp')
-ae = st_read("Cau_18s.shp");ae
-ae = as.owin(ae);ae #observation window
+ae.km <- st_read("~/Casanova/Universidad/Master/Tesis/Datos/Cau_18s.shp") %>% 
+  # Observational Window
+  as.owin() %>% 
+  # Re-escalar las muestras (de m a km)
+  rescale(1000, "km")
 
 #Puntos
-setwd("~/Casanova/Universidad/Master/Tesis/Datos_Giancarlo/Trabajados/vector/version 3/Puntos")
-list.files(pattern='.shp')
-muestras = st_read("pts_uchile.shp")
-muestras = as.ppp(muestras);muestras
+muestras <- st_read("~/Casanova/Universidad/Master/Tesis/Datos/T1 -Densidad/pts_uchile.shp") %>% 
+  as.ppp()
+
 marks(muestras) = NULL
 Window(muestras) = ae
 
+muestras.km = rescale(muestras,1000,'km')
+
 #Landcover
-setwd("~/Casanova/Universidad/Master/Tesis/Datos_Giancarlo/Trabajados/raster")
-list.files(pattern = '.tif')
-img = raster("lc_mask.tif")
-lc = as.im(img)
+lc.km <- raster("~/Casanova/Universidad/Master/Tesis/Datos/Biomasa_FONDECYT_1171560/tif/LandCover_rf_2019.tif") %>% 
+  projectRaster(crs = 32718) %>% 
+  crop(cau) %>% 
+  mask(cau) %>% 
+  as.im() %>% 
+  rescale(1000, "km")
 
 plot(muestras,main = NULL,cols = rgb(0,0,0,.1),pch=20)
 
-#Re-escalar las muestras (de m a km)----
-muestras.km = rescale(muestras,1000,'km')
-ae.km = rescale(ae,1000,'km')
-lc.km = rescale(lc,1000,'km')
-
 #Por muestras edáficas----
-setwd("~/Casanova/Universidad/Master/Tesis/Datos_Giancarlo/Trabajados/vector/version 3/Puntos")
+setwd("~/Casanova/Universidad/Master/Tesis/Datos/T1 -Densidad")
 list.files(pattern = '.shp')
-ala = st_read("ala_pts.shp"); ala = as.ppp(ala); marks(ala) = NULL; Window(ala) = ae
-pmp = st_read("cc_pmp_pts.shp"); pmp = as.ppp(pmp); marks(pmp) = NULL; Window(pmp) = ae
-da = st_read("da_pts.shp"); da = as.ppp(da); marks(da) = NULL; Window(da) = ae
-mo = st_read("mo_pts.shp"); mo = as.ppp(mo); marks(mo) = NULL; Window(mo) = ae
-n = st_read("n_pts.shp"); n = as.ppp(n); marks(n) = NULL; Window(n) = ae
-p = st_read("p_pts.shp"); p = as.ppp(p); marks(p) = NULL; Window(p) = ae
-pau = st_read("pau_pts.shp"); pau = as.ppp(pau); marks(pau) = NULL; Window(pau) = ae
-pdr = st_read("pdr_pdl_pts.shp"); pdr = as.ppp(pdr); marks(pdr) = NULL; Window(pdr) = ae
-prof = st_read("prof_pts.shp"); prof = as.ppp(prof); marks(prof) = NULL; Window(prof) = ae
 
-prof_efect = st_read("~/Casanova/Universidad/Master/Tesis/Trabajos/Profundidad efectiva/Profundidad-Efectiva/prof_efect.shp"); prof_efect = as.ppp(prof_efect); marks(prof_efect) = NULL; Window(prof_efect) = ae
+ala <- st_read("ala_pts.shp") %>% as.ppp(); marks(ala) = NULL; Window(ala) = ae
+pmp <- st_read("cc_pmp_pts.shp") %>% as.ppp(); marks(pmp) = NULL; Window(pmp) = ae
+da <- st_read("da_pts.shp") %>% as.ppp(); marks(da) = NULL; Window(da) = ae
+mo <- st_read("mo_pts.shp") %>% as.ppp(); marks(mo) = NULL; Window(mo) = ae
+n <- st_read("n_pts.shp") %>% as.ppp(); marks(n) = NULL; Window(n) = ae
+p <- st_read("p_pts.shp") %>% as.ppp(); marks(p) = NULL; Window(p) = ae
+pau <- st_read("pau_pts.shp") %>% as.ppp(); marks(pau) = NULL; Window(pau) = ae
+pdr <- st_read("pdr_pdl_pts.shp") %>% as.ppp(); marks(pdr) = NULL; Window(pdr) = ae
+
+prof_efect <- st_read("prof_efect.shp") %>% as.ppp(); marks(prof_efect) = NULL; Window(prof_efect) = ae
 
 plot(ala, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
 plot(pmp, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
@@ -54,8 +54,6 @@ plot(n, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
 plot(p, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
 plot(pau, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
 plot(pdr, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
-plot(prof, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
-plot(prof, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
 
 plot(prof_efect, main = NULL, cols = rgb(0,0,0,.1), pch = 20)
 
@@ -68,7 +66,7 @@ n.km = rescale(n, 1000, 'km')
 p.km = rescale(p, 1000, 'km')
 pau.km = rescale(pau, 1000, 'km')
 pdr.km = rescale(pdr, 1000, 'km')
-prof.km = rescale(prof, 1000, 'km')
+prof_efect.km = rescale(prof_efect, 1000, 'km')
 
 #Gráfico Kernel density raster----
 par(mfrow=c(1,1))
@@ -82,7 +80,7 @@ K.da = density(da.km, sigma = 7.23); plot(K.da, main = 'Da', las = 1); contour(K
 K.mo = density(mo.km, sigma = 7.23); plot(K.mo, main = 'MO', las = 1); contour(K.mo, add = T)
 K.n = density(n.km); plot(K.n, main = 'N', las = 1); contour(K.n, add = T)
 K.p = density(p.km); plot(K.p, main = 'P', las = 1); contour(K.p, add = T)
-K.prof = density(prof.km); plot(K.prof, main = 'Profundidad', las = 1);contour(K.prof, add = T)
+K.prof_efect = density(prof_efect.km); plot(K.prof_efect, main = 'Profundidad Efectiva', las = 1);contour(K.prof_efect, add = T)
 
 #Quadrat density----
 Q = quadratcount(muestras.km, nx = 5, ny = 5)
@@ -107,7 +105,6 @@ plot(intensity(Q_general, image = T))
 muestras.km %>% quadratcount(tess = lc.km_tess) %>% intensity()
 
 #Puntos de las muestras----
-setwd("~/Casanova/Universidad/Master/Tesis/Trabajos/1 Pts muestreo y densidad/Codigos")
 #Datos de cantidad
 muestras.km %>% quadratcount(tess = lc.km_tess) %>% as.data.frame() %>% rename (General = Freq)
 
