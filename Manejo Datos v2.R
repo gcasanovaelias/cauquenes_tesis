@@ -62,7 +62,9 @@ novo_pts <- anti_join(
 
 #* ¿Dónde se realizaron estos puntos?
 lc <- raster("~/Casanova/Universidad/Master/Tesis/Datos/Biomasa_FONDECYT_1171560/tif/LandCover_rf_2019.tif") %>% 
-  projectRaster(crs = 32718) %>% 
+  projectRaster(crs = 32718,
+                # Nearest neighbour es el adecuado para variables categóricas (por default se emplea el de interpolación linear)
+                method = "ngb") %>% 
   crop(cau) %>% 
   mask(cau)
 

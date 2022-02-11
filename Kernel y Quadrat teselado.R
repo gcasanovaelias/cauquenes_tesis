@@ -24,7 +24,8 @@ muestras.km = rescale(muestras,1000,'km')
 
 #Landcover
 lc.km <- raster("~/Casanova/Universidad/Master/Tesis/Datos/Biomasa_FONDECYT_1171560/tif/LandCover_rf_2019.tif") %>% 
-  projectRaster(crs = 32718) %>% 
+  projectRaster(crs = 32718,
+                method = "ngb") %>% 
   crop(cau) %>% 
   mask(cau) %>% 
   as.im() %>% 

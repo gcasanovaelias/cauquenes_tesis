@@ -130,6 +130,23 @@ ggplot() + geom_tile(data = lc_cau_df,
                      aes(x = x, y = y, fill = LandCover)) + 
   scale_fill_gradientn(colours = rainbow(12))
 
+  # 1.d Mapa de clases geológicas
+geo <- read_sf("~/Casanova/Universidad/Master/Tesis/Datos/geo_chile.shp") %>% 
+  st_transform(crs = 32718) %>% 
+  st_crop(cau) %>% 
+  st_intersection(cau)
+
+# Graficar
+ggplot() + 
+  geom_sf(data = geo, aes(fill = composicio)) +
+  geom_sf(data = prof_efect, color = "yellow") +
+  labs(title = "Composición Material Parental",
+       subtitle = "Cuenca Cauquenes",
+       caption = "Enero, 2022") +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_legend(title = "Composición MP"))
+
 # 2. Manejo ----
   # 2.a Profundidad frente meteorización
 prof_fr.meteo <- bd_cau %>% group_by(ID) %>% filter(bottom == max(bottom))
