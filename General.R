@@ -114,6 +114,15 @@ lc_cau <- raster("~/Casanova/Universidad/Master/Tesis/Datos/Biomasa_FONDECYT_117
   crop(cau) %>% 
   mask(cau)
 
+# landUse <- raster("./LandUse/LandCover_rf_2018_v4.3.tif") %>% 
+#   projectRaster(res = c(30, 30),
+#                 crs = 32718,
+#                 method = "ngb") %>% 
+#   crop(cau) %>% 
+#   mask(cau)
+# 
+# saveRDS(object = landUse, file = "./rds/LandUse_cau.rds")
+
 # Conversión a df
 lc_cau_df <- lc_cau %>% 
   as("SpatialPixelsDataFrame") %>% 
