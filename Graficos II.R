@@ -72,8 +72,7 @@ theme_set(theme_bw(base_size = 17, base_family = "Times New Roman"))
   labs(title = NULL,
        subtitle = NULL,
        x = NULL,
-       y = NULL,
-       caption = "CRS: EPSG 32718 - WGS 84 / UTM zone 18S") +
+       y = NULL) +
   scale_fill_manual(name = "Land use",
                     values = c("#04AB01", "#DFAE02", "#DF4802", "#1175D1", "#DAF7A6"),
                     labels = LandUse.,
@@ -102,8 +101,7 @@ theme_set(theme_bw(base_size = 17, base_family = "Times New Roman"))
     pad_x = unit(0.4, "cm"),
     pad_y = unit(0.4, "cm"),
     location = "tl"
-  ) +
-  theme(legend.position = "bottom"))
+  ))
 
 
 # Red hidrográfica & Puntos de muetreo ------------------------------------
@@ -114,7 +112,7 @@ theme_set(theme_bw(base_size = 17, base_family = "Times New Roman"))
 
 (gg_red_hidro <- ggplot() +
     # Cuenca
-    geom_sf(data = cau) +
+    geom_sf(data = cau, fill = "white") +
     # Red hidrográfica
     geom_sf(
       data = red_hidro, 
@@ -124,7 +122,7 @@ theme_set(theme_bw(base_size = 17, base_family = "Times New Roman"))
     # Puntos de muestreo
     geom_sf(
       data = pts_uch, 
-      size = 1, 
+      size = 1.8, 
       aes(color = "Muestreo"), 
       show.legend = "point") +
     scale_color_manual(
